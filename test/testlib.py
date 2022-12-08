@@ -10,17 +10,18 @@ from panda_gym.envs.robots.doosan import Doosan
 from panda_gym.envs.robots.panda import Panda
 from panda_gym.envs.panda_tasks.doosan_task import DoosanTest
 import numpy as np
+import time
 
 
 env = DoosanTest(render= True)
 
-observation, info = env.reset()
+observation = env.reset()
 
 for _ in range(1000):
     action = env.action_space.sample() # random action
-    observation, reward, terminated, truncated, info = env.step(action)
+    observation, reward, done, info = env.step(action)
+    
+    time.sleep(0.03)
 
-    if terminated or truncated:
-        observation, info = env.reset()
 
 env.close()
