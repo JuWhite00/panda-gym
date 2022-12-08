@@ -12,7 +12,7 @@ from panda_gym.envs.panda_tasks.doosan_task import DoosanTest
 import numpy as np
 
 
-env = gym.make("DoosanTest-v3", render=True)
+env = DoosanTest(render= True)
 
 observation, info = env.reset()
 
