@@ -11,7 +11,7 @@ import os
 from gymnasium import spaces
 
 from panda_gym.envs.core import PyBulletRobot
-from panda_gym.pybullet_gym import PyBullet
+from panda_gym.pybullet import PyBullet
 from sys import platform
 
 dirname = os.path.dirname(__file__)

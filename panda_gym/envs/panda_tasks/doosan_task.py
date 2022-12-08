@@ -4,7 +4,7 @@ from panda_gym.envs.core import RobotTaskEnv
 from panda_gym.envs.robots.doosan import Doosan
 
 from panda_gym.envs.tasks.test import Test
-from panda_gym.pybullet_gym import PyBullet
+from panda_gym.pybullet import PyBullet
 
 class DoosanTest(RobotTaskEnv):
     """Reach task wih Panda robot.

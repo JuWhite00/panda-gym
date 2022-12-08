@@ -4,33 +4,23 @@ Created on Tue Dec  6 23:24:49 2022
 
 @author: tangu
 """
-import gymnasium as gym
-from panda_gym.pybullet_gym import PyBullet
+import gym
+from panda_gym.pybullet import PyBullet
 from panda_gym.envs.robots.doosan import Doosan
 from panda_gym.envs.robots.panda import Panda
-from panda_gym.envs.panda_tasks import DoosanTest
+from panda_gym.envs.panda_tasks.doosan_task import DoosanTest
 import numpy as np
 
-sim = PyBullet(render = False)
-robot = Doosan(sim)
 
+env = gym.make("DoosanTest-v3", render=True)
 
-for _ in range(10000):
-    robot.set_action(np.array([1.0]))
-    sim.step()
-    sim.render()
-    
-sim.__del__()
+observation, info = env.reset()
 
-# env = gym.make("DoosanTest-v3", render=True)
+for _ in range(1000):
+    action = env.action_space.sample() # random action
+    observation, reward, terminated, truncated, info = env.step(action)
 
-# observation, info = env.reset()
+    if terminated or truncated:
+        observation, info = env.reset()
 
-# for _ in range(1000):
-#     action = env.action_space.sample() # random action
-#     observation, reward, terminated, truncated, info = env.step(action)
-
-#     if terminated or truncated:
-#         observation, info = env.reset()
-
-# env.close()
+env.close()
