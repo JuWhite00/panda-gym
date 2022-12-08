@@ -1,0 +1,6 @@
+[submodule "mesh/doosan-robot2"]
+	path = mesh/doosan-robot2
+	url = https://github.com/Tanguy-M/doosan-robot2.git
+[submodule "mesh/pybullet-URDF-models"]
+	path = mesh/pybullet-URDF-models
+	url = https://github.com/Tanguy-M/pybullet-URDF-models.git
