@@ -6,6 +6,10 @@ import numpy as np
 
 from panda_gym.envs.core import Task
 from panda_gym.utils import distance
+import tacto
+import hydra
+import time
+import pybulletX as px
 # from sys import platform
 
 
@@ -75,9 +79,26 @@ class Test(Task):
         #     baseOrientation=np.zeros(3),
         #     useFixedBase=False,
         # )
-
+    
     def get_obs(self) -> np.ndarray:
-        return np.array([])  # no tasak-specific observation
+        config_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
+        object_path = "/home/julien/roboticProject/panda-gym/mesh/pybullet-URDF-models/urdf_models/models/book_1/model.urdf"
+        obj = px.Body(object_path)
+        digits = tacto.Sensor(config_path=config_path)
+        id = 1
+        links_number = [11, 14]
+        digits.add_camera(id, links_number)
+        digits.add_object(obj)
+
+        t = px.utils.SimulationThread(real_time_factor=1.0)
+        t.start()
+
+        while True:
+            color, depth = digits.render()
+            digits.updateGUI(color, depth)
+            time.sleep(0.01)
+
+        #return np.array([])  # no tasak-specific observation
 
     def get_achieved_goal(self) -> np.ndarray:
         ee_position = np.array(self.get_ee_position())
