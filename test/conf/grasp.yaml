@@ -2,10 +2,6 @@ hydra:
   run:
     dir: ./
 
-object:
-  urdf_path: "objects/cube_small.urdf"
-  base_position: [0.50, 0, 0.02]
-  global_scaling: 0.6
 
 tacto:
   width: 120

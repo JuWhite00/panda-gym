@@ -10,7 +10,9 @@ import tacto
 import hydra
 import time
 import pybulletX as px
+import pybullet as p
 # from sys import platform
+from omegaconf import DictConfig
 
 
 
@@ -79,12 +81,13 @@ class Test(Task):
         #     baseOrientation=np.zeros(3),
         #     useFixedBase=False,
         # )
-    
-    def get_obs(self) -> np.ndarray:
-        config_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
-        object_path = "/home/julien/roboticProject/panda-gym/mesh/pybullet-URDF-models/urdf_models/models/book_1/model.urdf"
-        obj = px.Body(object_path)
-        digits = tacto.Sensor(config_path=config_path)
+        
+    @hydra.main(config_path = "conf", config_name= "grasp")
+    def get_obs(self, cfg: DictConfig) -> None:
+        
+        obj =  px.Body(**cfg.object)
+        digits = tacto.Sensor(**cfg.tacto)
+        p.resetDebugVisualizerCamera(cfg.pybullet_camera)
         id = 1
         links_number = [11, 14]
         digits.add_camera(id, links_number)
