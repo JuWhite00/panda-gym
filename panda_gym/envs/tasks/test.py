@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
 import numpy as np
-# import random
-# import os
+import random
+import os
 
 from panda_gym.envs.core import Task
 from panda_gym.utils import distance
@@ -11,11 +11,8 @@ import hydra
 import time
 import pybulletX as px
 import pybullet as p
-# from sys import platform
 from omegaconf import DictConfig
-
-
-
+from sys import platform
 
 
 class Test(Task):
@@ -33,25 +30,30 @@ class Test(Task):
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
         self.goal_range_high = np.array([goal_range / 2, goal_range / 2, goal_range])
+        self.path_obj = ""
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
 
     def _create_scene(self) -> None:
         
-        # dirname = os.path.dirname(__file__)
-        # dirname = dirname[:-11]
+        dirname = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0])
 
         # if self.path_obj != "":
-            
         #     if platform == "win32":
         #         self.path_obj = dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
         #         select_name = random.sample(os.listdir(self.path_obj),1)[0]
-        #         self.path_obj = self.path_obj + select_name + r'\model.urdf'
+        #         self.path_obj = self.path_obj + select_name + '\\model.urdf'
         #     else:
         #         self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
         #         select_name = random.sample(os.listdir(self.path_obj),1)[0]
         #         self.path_obj = self.path_obj + select_name + '/model.urdf'
+        
+        #Part for julien
+        if self.path_obj == "":
+            self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
+            select_name = random.sample(os.listdir(self.path_obj),1)[0]
+            self.path_obj = self.path_obj + select_name + '/model.urdf'
         
         self.sim.create_plane(z_offset=-0.4)
         
@@ -74,20 +76,20 @@ class Test(Task):
         )
         
         #insert object here
-        # self.sim.loadURDF(
-        #     body_name="obj",
-        #     fileName=self.path_obj,
-        #     basePosition=np.zeros(3),
-        #     baseOrientation=np.zeros(3),
-        #     useFixedBase=False,
-        # )
-        
-    @hydra.main(config_path = "conf", config_name= "grasp")
-    def get_obs(self, cfg: DictConfig) -> None:
-        
-        obj =  px.Body(**cfg.object)
-        digits = tacto.Sensor(**cfg.tacto)
-        p.resetDebugVisualizerCamera(cfg.pybullet_camera)
+
+        self.sim.loadURDF(
+            body_name="obj",
+            fileName=self.path_obj,
+            basePosition=np.zeros(3),
+            baseOrientation=np.zeros(3),
+            useFixedBase=False,
+        )
+    
+    def get_obs(self) -> np.ndarray: #mets tes paths dans des variables, je ne peux pas travailler sur le git sinon...
+        config_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
+        object_path = "/home/julien/roboticProject/panda-gym/mesh/pybullet-URDF-models/urdf_models/models/book_1/model.urdf"
+        obj = px.Body(object_path)
+        digits = tacto.Sensor(config_path=config_path)
         id = 1
         links_number = [11, 14]
         digits.add_camera(id, links_number)

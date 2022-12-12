@@ -14,11 +14,15 @@ from panda_gym.envs.core import PyBulletRobot
 from panda_gym.pybullet import PyBullet
 from sys import platform
 
-dirname = os.path.dirname(__file__)
-dirname = dirname[:-12]
-
-
+#For julien
 doosan_path2 = "mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+
+# if platform == "win32":
+#     doosan_path2 = r"mesh\doosan-robot2\dsr_description2\urdf\a0509.blue_gripper.urdf"
+# else:
+#     doosan_path2 = "mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+
+# doosan_path2 = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0], doosan_path2)
 
 class Doosan(PyBulletRobot):
     """Panda robot in PyBullet.
@@ -47,7 +51,7 @@ class Doosan(PyBulletRobot):
         super().__init__(
             sim,
             body_name="Doosan",
-            file_name=os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0], doosan_path2),
+            file_name=doosan_path2,
             base_position=base_position,
             action_space=action_space,
             joint_indices=np.array([0, 1, 2, 3, 4, 5, 6, 9, 10]),
