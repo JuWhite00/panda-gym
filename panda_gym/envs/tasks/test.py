@@ -10,10 +10,11 @@ import tacto
 import hydra
 import time
 import pybulletX as px
-import pybullet as p
-from omegaconf import DictConfig
+import pybullet as p 
+from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
+conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
 
 class Test(Task):
     def __init__(
@@ -25,7 +26,9 @@ class Test(Task):
         goal_range=0.3,
     ) -> None:
         super().__init__(sim)
+
         self.reward_type = reward_type
+        self.conf_path = conf = OmegaConf.load(conf_path)
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
@@ -77,23 +80,24 @@ class Test(Task):
         
         #insert object here
 
-        self.sim.loadURDF(
+        """self.sim.loadURDF(
             body_name="obj",
             fileName=self.path_obj,
             basePosition=np.zeros(3),
             baseOrientation=np.zeros(3),
             useFixedBase=False,
-        )
-    
+        )"""
+
     def get_obs(self) -> np.ndarray: #mets tes paths dans des variables, je ne peux pas travailler sur le git sinon...
-        config_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
-        object_path = "/home/julien/roboticProject/panda-gym/mesh/pybullet-URDF-models/urdf_models/models/book_1/model.urdf"
-        obj = px.Body(object_path)
-        digits = tacto.Sensor(config_path=config_path)
+        
+        
+        
+        digits = tacto.Sensor(**self.conf_path.tacto)
+        p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
         id = 1
         links_number = [11, 14]
         digits.add_camera(id, links_number)
-        digits.add_object(obj)
+        #digits.add_object(obj)
 
         t = px.utils.SimulationThread(real_time_factor=1.0)
         t.start()

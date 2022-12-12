@@ -5,7 +5,7 @@ Created on Tue Dec  6 23:28:29 2022
 @author: tangu
 """
 from typing import Optional
-
+import hydra 
 import numpy as np
 import os
 from gym import spaces
@@ -15,7 +15,7 @@ from panda_gym.pybullet import PyBullet
 from sys import platform
 
 #For julien
-doosan_path2 = "mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+doosan_path2 = "/home/julien/roboticProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
 
 # if platform == "win32":
 #     doosan_path2 = r"mesh\doosan-robot2\dsr_description2\urdf\a0509.blue_gripper.urdf"
@@ -123,6 +123,7 @@ class Doosan(PyBulletRobot):
         target_arm_angles = current_arm_joint_angles + arm_joint_ctrl
         return target_arm_angles
 
+    @hydra.main(config_path="conf", config_name="grasp")
     def get_obs(self) -> np.ndarray:
         # end-effector position and velocity
         ee_position = np.array(self.get_ee_position())

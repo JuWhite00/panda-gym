@@ -6,8 +6,11 @@ from panda_gym.envs.robots.doosan import Doosan
 from panda_gym.envs.tasks.test import Test
 from panda_gym.pybullet import PyBullet
 
+
+
+
 class DoosanTest(RobotTaskEnv):
-    """Reach task wih Panda robot.
+    """Reach task wih Doosan robot.
 
     Args:
         render (bool, optional): Activate rendering. Defaults to False.
@@ -15,8 +18,8 @@ class DoosanTest(RobotTaskEnv):
         control_type (str, optional): "ee" to control end-effector position or "joints" to control joint values.
             Defaults to "ee".
     """
-
-    def __init__(self, render: bool = False, reward_type: str = "sparse", control_type: str = "ee") -> None:
+    
+    def __init__(self, render: bool = True, reward_type: str = "sparse", control_type: str = "ee") -> None:
         sim = PyBullet(render=render)
         robot = Doosan(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
         task = Test(sim, reward_type=reward_type, get_ee_position=robot.get_ee_position)

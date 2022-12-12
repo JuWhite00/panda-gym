@@ -1,6 +1,9 @@
-hydra:
-  run:
-    dir: ./
+
+
+object:
+  urdf_path: "/home/julien/roboticProject/panda-gym/mesh/pybullet-URDF-models/urdf_models/models/book_1/model.urdf"
+  base_position: [-0.015, 0, 0.04]
+  global_scaling: 0.1
 
 
 tacto:
