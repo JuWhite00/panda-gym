@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Dec  6 23:28:29 2022
-
 @author: tangu
 """
 from typing import Optional
@@ -15,9 +14,8 @@ from panda_gym.pybullet import PyBullet
 from sys import platform
 
 #For julien
-doosan_path2 = "C:/Users/bouff/RoboticsProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
-
-
+# doosan_path2 = "/home/julien/roboticProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+doosan_path2 = "/home/tanguy/Documents/Project_rob/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
 # if platform == "win32":
 #     doosan_path2 = r"mesh\doosan-robot2\dsr_description2\urdf\a0509.blue_gripper.urdf"
 # else:
@@ -27,7 +25,6 @@ doosan_path2 = "C:/Users/bouff/RoboticsProject/panda-gym/mesh/doosan-robot2/dsr_
 
 class Doosan(PyBulletRobot):
     """Panda robot in PyBullet.
-
     Args:
         sim (PyBullet): Simulation instance.
         block_gripper (bool, optional): Whether the gripper is blocked. Defaults to False.
@@ -89,10 +86,8 @@ class Doosan(PyBulletRobot):
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:
         """Compute the target arm angles from the end-effector displacement.
-
         Args:
             ee_displacement (np.ndarray): End-effector displacement, as (dx, dy, dy).
-
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """
@@ -111,10 +106,8 @@ class Doosan(PyBulletRobot):
 
     def arm_joint_ctrl_to_target_arm_angles(self, arm_joint_ctrl: np.ndarray) -> np.ndarray:
         """Compute the target arm angles from the arm joint control.
-
         Args:
             arm_joint_ctrl (np.ndarray): Control of the 7 joints.
-
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """

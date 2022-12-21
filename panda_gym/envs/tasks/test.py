@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
 import numpy as np
+import matplotlib.pyplot as plt
 import random
 import os
 
@@ -14,8 +15,7 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
-
+conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
 
 class Test(Task):
     def __init__(
@@ -29,7 +29,7 @@ class Test(Task):
         super().__init__(sim)
 
         self.reward_type = reward_type
-        self.conf_path = OmegaConf.load(conf_path)
+        self.conf_path = conf = OmegaConf.load(conf_path)
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
@@ -39,25 +39,36 @@ class Test(Task):
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
 
+        self.width_camera = 128
+        self.height_camera = 128
+
+        self.fov = 60
+        self.aspect = self.width_camera / self.height_camera
+        self.near = 0.02
+        self.far = 1
+
+        self.view_matrix_camera = p.computeViewMatrix([0, 0, 0.5], [0, 0, 0], [1, 0, 0])
+        self.projection_matrix_camera = p.computeProjectionMatrixFOV(self.fov, self.aspect, self.near, self.far)
+
     def _create_scene(self) -> None:
         
         dirname = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0])
 
-        # if self.path_obj != "":
-        #     if platform == "win32":
-        #         self.path_obj = dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
-        #         select_name = random.sample(os.listdir(self.path_obj),1)[0]
-        #         self.path_obj = self.path_obj + select_name + '\\model.urdf'
-        #     else:
-        #         self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
-        #         select_name = random.sample(os.listdir(self.path_obj),1)[0]
-        #         self.path_obj = self.path_obj + select_name + '/model.urdf'
+        if self.path_obj != "":
+            if platform == "win32":
+                self.path_obj = dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
+                select_name = random.sample(os.listdir(self.path_obj),1)[0]
+                self.path_obj = self.path_obj + select_name + '\\model.urdf'
+            else:
+                self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
+                select_name = random.sample(os.listdir(self.path_obj),1)[0]
+                self.path_obj = self.path_obj + select_name + '/model.urdf'
         
         #Part for julien
-        if self.path_obj == "":
-            self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
-            select_name = random.sample(os.listdir(self.path_obj),1)[0]
-            self.path_obj = self.path_obj + select_name + '/model.urdf'
+        # if self.path_obj == "":
+        #     self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
+        #     select_name = random.sample(os.listdir(self.path_obj),1)[0]
+        #     self.path_obj = self.path_obj + select_name + '/model.urdf'
         
         self.sim.create_plane(z_offset=-0.4)
         
@@ -89,26 +100,27 @@ class Test(Task):
             useFixedBase=False,
         )"""
 
-    def get_obs(self) -> np.ndarray: #mets tes paths dans des variables, je ne peux pas travailler sur le git sinon...
+    def get_obs(self) -> np.ndarray: 
         
+        # digits = tacto.Sensor(**self.conf_path.tacto)
+        # p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
+        # id = 1
+        # links_number = [11, 14]
+        # digits.add_camera(id, links_number)
+        # #digits.add_object(obj)
+
+        # t = px.utils.SimulationThread(real_time_factor=1.0)
+        # t.start()
+
+        # while True:
+            # color, depth = digits.render()
+            # digits.updateGUI(color, depth)
+            # time.sleep(0.01)
+        self.return_camera()
+
         
-        
-        digits = tacto.Sensor(**self.conf_path.tacto)
-        p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
-        id = 1
-        links_number = [11, 14]
-        digits.add_camera(id, links_number)
-        #digits.add_object(obj)
 
-        t = px.utils.SimulationThread(real_time_factor=1.0)
-        t.start()
-
-        while True:
-            color, depth = digits.render()
-            digits.updateGUI(color, depth)
-            time.sleep(0.01)
-
-        #return np.array([])  # no tasak-specific observation
+        return np.array([])  # no tasak-specific observation
 
     def get_achieved_goal(self) -> np.ndarray:
         ee_position = np.array(self.get_ee_position())
@@ -133,3 +145,26 @@ class Test(Task):
             return -float(d > self.distance_threshold)
         else:
             return -d
+
+    def return_camera(self):
+        images = p.getCameraImage(self.width_camera,
+                          self.height_camera,
+                          self.view_matrix_camera,
+                          self.projection_matrix_camera,
+                          shadow=True,
+                          renderer=p.ER_BULLET_HARDWARE_OPENGL)
+        
+        rgb_opengl = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) * 1. / 255.
+        depth_buffer_opengl = np.reshape(images[3], [self.width_camera, self.height_camera])
+        depth_opengl = self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_opengl)
+        seg_opengl = np.reshape(images[4], [self.width_camera, self.height_camera]) * 1. / 255.
+        time.sleep(1)
+
+        plt.subplot(1, 2, 1)
+        plt.imshow(depth_opengl, cmap='gray', vmin=0, vmax=1)
+        plt.title('Depth OpenGL3')
+
+        plt.subplot(1, 2, 2)
+        plt.imshow(rgb_opengl)
+        plt.title('RGB OpenGL3')
+        plt.show()

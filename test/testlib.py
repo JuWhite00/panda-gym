@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Dec  6 23:24:49 2022
-
 @author: tangu
 """
 import gym
@@ -19,7 +18,6 @@ import hydra
 env = DoosanTest()
 
 observation = env.reset()
-print(observation)
 
 for _ in range(1000):
     action = env.action_space.sample() # random action
