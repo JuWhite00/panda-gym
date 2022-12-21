@@ -14,7 +14,8 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
+conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
+
 
 class Test(Task):
     def __init__(
@@ -28,7 +29,7 @@ class Test(Task):
         super().__init__(sim)
 
         self.reward_type = reward_type
-        self.conf_path = conf = OmegaConf.load(conf_path)
+        self.conf_path = OmegaConf.load(conf_path)
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])

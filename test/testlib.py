@@ -19,6 +19,7 @@ import hydra
 env = DoosanTest()
 
 observation = env.reset()
+print(observation)
 
 for _ in range(1000):
     action = env.action_space.sample() # random action

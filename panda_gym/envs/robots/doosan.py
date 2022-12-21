@@ -15,7 +15,8 @@ from panda_gym.pybullet import PyBullet
 from sys import platform
 
 #For julien
-doosan_path2 = "/home/julien/roboticProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+doosan_path2 = "C:/Users/bouff/RoboticsProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+
 
 # if platform == "win32":
 #     doosan_path2 = r"mesh\doosan-robot2\dsr_description2\urdf\a0509.blue_gripper.urdf"
