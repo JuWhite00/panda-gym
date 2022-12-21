@@ -13,15 +13,19 @@ from panda_gym.envs.core import PyBulletRobot
 from panda_gym.pybullet import PyBullet
 from sys import platform
 
-#For julien
-# doosan_path2 = "/home/julien/roboticProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
-doosan_path2 = "/home/tanguy/Documents/Project_rob/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+#For julien Linux
+#doosan_path2 = "/home/julien/roboticProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+#doosan_path2 = "/home/tanguy/Documents/Project_rob/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
 # if platform == "win32":
 #     doosan_path2 = r"mesh\doosan-robot2\dsr_description2\urdf\a0509.blue_gripper.urdf"
 # else:
 #     doosan_path2 = "mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
 
 # doosan_path2 = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0], doosan_path2)
+
+#For Julien Windows
+doosan_path2 = "C:/Users/bouff/RoboticsProject/panda-gym/mesh/doosan-robot2/dsr_description2/urdf/a0509.blue_gripper.urdf"
+
 
 class Doosan(PyBulletRobot):
     """Panda robot in PyBullet.

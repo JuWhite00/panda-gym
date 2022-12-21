@@ -15,8 +15,10 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
-
+#conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
+#conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
+#Path config for windows julien 
+conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
 class Test(Task):
     def __init__(
         self,
@@ -29,7 +31,7 @@ class Test(Task):
         super().__init__(sim)
 
         self.reward_type = reward_type
-        self.conf_path = conf = OmegaConf.load(conf_path)
+        self.conf_path = OmegaConf.load(conf_path)
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
@@ -102,20 +104,7 @@ class Test(Task):
 
     def get_obs(self) -> np.ndarray: 
         
-        # digits = tacto.Sensor(**self.conf_path.tacto)
-        # p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
-        # id = 1
-        # links_number = [11, 14]
-        # digits.add_camera(id, links_number)
-        # #digits.add_object(obj)
-
-        # t = px.utils.SimulationThread(real_time_factor=1.0)
-        # t.start()
-
-        # while True:
-            # color, depth = digits.render()
-            # digits.updateGUI(color, depth)
-            # time.sleep(0.01)
+        self.return_digit_data()
         self.return_camera()
 
         
@@ -168,3 +157,19 @@ class Test(Task):
         plt.imshow(rgb_opengl)
         plt.title('RGB OpenGL3')
         plt.show()
+        
+    def return_digit_data(self):
+        digits = tacto.Sensor(**self.conf_path.tacto)
+        p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
+        id = 1
+        links_number = [11, 14]
+        digits.add_camera(id, links_number)
+        #digits.add_object(obj)
+
+        t = px.utils.SimulationThread(real_time_factor=1.0)
+        t.start()
+
+        
+        color, depth = digits.render()
+        digits.updateGUI(color, depth)
+        time.sleep(0.01)
