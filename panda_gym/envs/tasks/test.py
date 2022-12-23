@@ -2,7 +2,10 @@ from typing import Any, Dict
 
 import numpy as np
 import matplotlib.pyplot as plt
+import multiprocessing
+from queue import Queue
 import random
+import cv2
 import os
 
 from panda_gym.envs.core import Task
@@ -15,10 +18,10 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-#conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
+conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
 #conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
 #Path config for windows julien 
-conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
+# conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
 class Test(Task):
     def __init__(
         self,
@@ -30,6 +33,7 @@ class Test(Task):
     ) -> None:
         super().__init__(sim)
 
+        #self.all_processes = []
         self.reward_type = reward_type
         self.conf_path = OmegaConf.load(conf_path)
         self.distance_threshold = distance_threshold
@@ -41,6 +45,7 @@ class Test(Task):
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
 
+        # create the camera view
         self.width_camera = 128
         self.height_camera = 128
 
@@ -105,9 +110,9 @@ class Test(Task):
     def get_obs(self) -> np.ndarray: 
         
         self.return_digit_data()
-        self.return_camera()
 
-        
+        # compute the RGB image and depth
+        rgb, depth = self.return_camera()
 
         return np.array([])  # no tasak-specific observation
 
@@ -135,28 +140,27 @@ class Test(Task):
         else:
             return -d
 
-    def return_camera(self):
+    def return_camera(self): # compute the RGB image from the init camera + the depth converted
         images = p.getCameraImage(self.width_camera,
                           self.height_camera,
                           self.view_matrix_camera,
                           self.projection_matrix_camera,
                           shadow=True,
-                          renderer=p.ER_BULLET_HARDWARE_OPENGL)
+                          renderer=p.ER_TINY_RENDERER)
         
-        rgb_opengl = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) * 1. / 255.
-        depth_buffer_opengl = np.reshape(images[3], [self.width_camera, self.height_camera])
-        depth_opengl = self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_opengl)
-        seg_opengl = np.reshape(images[4], [self.width_camera, self.height_camera]) * 1. / 255.
-        time.sleep(1)
+        depth_buffer_tiny = np.reshape(images[3], [self.width_camera, self.height_camera])
+        depth_tiny = self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_tiny)
+        rgb_tiny = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) * 1. / 255.
+        rgb_tiny = rgb_tiny[:,:,:3]
+        
+        # for process in self.all_processes:
+        #     process.terminate()
 
-        plt.subplot(1, 2, 1)
-        plt.imshow(depth_opengl, cmap='gray', vmin=0, vmax=1)
-        plt.title('Depth OpenGL3')
+        cv2.imshow("RGB image", rgb_tiny)
+        cv2.imshow("Depth image", depth_tiny)
+        
 
-        plt.subplot(1, 2, 2)
-        plt.imshow(rgb_opengl)
-        plt.title('RGB OpenGL3')
-        plt.show()
+        return rgb_tiny, depth_tiny
         
     def return_digit_data(self):
         digits = tacto.Sensor(**self.conf_path.tacto)
@@ -173,3 +177,20 @@ class Test(Task):
         color, depth = digits.render()
         digits.updateGUI(color, depth)
         time.sleep(0.01)
+
+    def display_video(self, color_image, depth_image): # display camera images in get_obs()
+        cv2.namedWindow("RGB")
+        cv2.namedWindow("Depth")
+
+        color_image = np.array(color_image)
+        cv2.imshow("RGB", color_image)
+
+        depth_image = np.array(depth_image)
+        cv2.imshow("Depth", depth_image)
+
+        time.sleep(1)
+
+        cv2.destroyWindow("RGB")
+        cv2.destroyWindow("Depth")
+
+
