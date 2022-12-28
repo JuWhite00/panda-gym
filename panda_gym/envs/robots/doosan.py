@@ -67,6 +67,9 @@ class Doosan(PyBulletRobot):
         self.sim.set_lateral_friction(self.body_name, self.fingers_indices[1], lateral_friction=1.0)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[0], spinning_friction=0.001)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[1], spinning_friction=0.001)
+    
+    def getIDRobot(self):
+        return self.file_name
 
     def set_action(self, action: np.ndarray) -> None:
         action = action.copy()  # ensure action don't change

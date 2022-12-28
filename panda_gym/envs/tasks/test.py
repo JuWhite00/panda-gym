@@ -9,6 +9,7 @@ import cv2
 import os
 
 from panda_gym.envs.core import Task
+from panda_gym.envs.robots import doosan
 from panda_gym.utils import distance
 import tacto
 import hydra
@@ -61,7 +62,7 @@ class Test(Task):
         
         dirname = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0])
 
-        if self.path_obj != "":
+        if self.path_obj == "":
             if platform == "win32":
                 self.path_obj = dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
                 select_name = random.sample(os.listdir(self.path_obj),1)[0]
@@ -99,13 +100,13 @@ class Test(Task):
         
         #insert object here
 
-        """self.sim.loadURDF(
+        self.sim.loadURDF(
             body_name="obj",
             fileName=self.path_obj,
             basePosition=np.zeros(3),
-            baseOrientation=np.zeros(3),
+            baseOrientation=np.array([0,0,0,1]),
             useFixedBase=False,
-        )"""
+        )
 
     def get_obs(self) -> np.ndarray: 
         
@@ -193,4 +194,13 @@ class Test(Task):
         cv2.destroyWindow("RGB")
         cv2.destroyWindow("Depth")
 
+    def detectcollision(id_object):
+        contact_points = p.getContactPoints(doosan.Doosan.getIDRobot(),id_object)
+
+        if len(contact_points) > 0:
+            collision_detected = 1
+        else:
+            collision_detected = 0
+
+        return collision_detected
 
