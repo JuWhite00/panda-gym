@@ -1,15 +1,16 @@
 from typing import Any, Dict
 
+import datetime
+import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import multiprocessing
-from queue import Queue
+# import matplotlib.pyplot as plt
+# import multiprocessing
+# from queue import Queue
 import random
 import cv2
 import os
 
 from panda_gym.envs.core import Task
-from panda_gym.envs.robots.doosan import Doosan
 from panda_gym.utils import distance
 import tacto
 import hydra
@@ -42,6 +43,7 @@ class Test(Task):
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
         self.goal_range_high = np.array([goal_range / 2, goal_range / 2, goal_range])
         self.path_obj = ""
+        self.df = pd.DataFrame(columns=['rgbdigits','depthdigits','rgbcam','depthcam','touching','timestamp'])
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -121,8 +123,16 @@ class Test(Task):
         rgbdigit, depthdigit = self.return_digit_data()
         rgbcam, depthcam = self.return_camera()
         contact = self.detectcollision()
-        obs_vec = [rgbdigit,depthdigit,rgbcam,depthcam,contact]
-        #print(obs_vec)
+
+        #obs_vec = [rgbdigit,depthdigit,rgbcam,depthcam,contact]
+
+        self.df = self.df.append({'rgbdigits':rgbdigit,
+                                  'depthdigits':depthdigit,
+                                  'rgbcam':rgbcam,
+                                  'depthcam':depthcam,
+                                  'touching':contact,
+                                  'timestamp':datetime.datetime.now()},
+                                  ignore_index=True)
 
         return np.array([])  # no tasak-specific observation
 
