@@ -218,3 +218,7 @@ class Test(Task):
             collision_detected = 0
 
         return np.array([collision_detected])
+<<<<<<< HEAD
+=======
+
+>>>>>>> c61f91893aef81442cc77ba8e2f1139df3a7af53

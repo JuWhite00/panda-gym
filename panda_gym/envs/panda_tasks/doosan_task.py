@@ -22,4 +22,8 @@ class DoosanTest(RobotTaskEnv):
         sim = PyBullet(render=render)
         robot = Doosan(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
         task = Test(sim, reward_type=reward_type, robot=robot)
+<<<<<<< HEAD
         super().__init__(robot, task)
+=======
+        super().__init__(robot, task)
+>>>>>>> c61f91893aef81442cc77ba8e2f1139df3a7af53
