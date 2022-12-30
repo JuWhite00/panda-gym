@@ -295,3 +295,7 @@ class RobotTaskEnv(gym.GoalEnv):
             pitch=pitch,
             roll=roll,
         )
+    
+    def get_target_position(self, object_name : str):
+        target_position = self.sim.get_base_position(object_name)
+        return target_position

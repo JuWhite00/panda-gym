@@ -20,10 +20,10 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
+#conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
 #conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
 #Path config for windows julien 
-# conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
+conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
 class Test(Task):
     def __init__(
         self,
@@ -218,7 +218,4 @@ class Test(Task):
             collision_detected = 0
 
         return np.array([collision_detected])
-<<<<<<< HEAD
-=======
 
->>>>>>> c61f91893aef81442cc77ba8e2f1139df3a7af53

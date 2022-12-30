@@ -18,12 +18,12 @@ import hydra
 env = DoosanTest()
 
 observation = env.reset()
-
+target_position = env.get_target_position("target")
 for _ in range(1000):
-    action = env.action_space.sample() # random action
-    observation, reward, done, info = env.step(action)
     
-    time.sleep(0.03)
+    observation, reward, done, info = env.step(target_position)
+    
+
 
 
 env.close()
