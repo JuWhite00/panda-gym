@@ -89,7 +89,6 @@ class Doosan(PyBulletRobot):
             target_fingers_width = fingers_width + fingers_ctrl
 
         target_angles = np.concatenate((target_arm_angles, [target_fingers_width / 2, target_fingers_width / 2]))
-        print("TARGET ANGLES: ", target_angles)
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:

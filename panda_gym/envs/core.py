@@ -306,4 +306,8 @@ class RobotTaskEnv(gym.GoalEnv):
     def joint_indices(self, id_robot: int):
         joint_indices = self.sim.getNumJoints(id_robot)
         return joint_indices
+    
+    def getJointState(self, object_id: int, jointIndex: int):
+        joint_state = self.sim.get_joint_angle(object_id, jointIndex)[0]
+        return joint_state
    

@@ -227,7 +227,7 @@ class PyBullet:
         Returns:
             float: The angle.
         """
-        return self.physics_client.getJointState(self._bodies_idx[body], joint)[0]
+        return self.physics_client.getJointState(self._bodies_idx[body], joint)
 
     def get_joint_velocity(self, body: str, joint: int) -> float:
         """Get the velocity of the joint of the body.
