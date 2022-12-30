@@ -318,3 +318,7 @@ class RobotTaskEnv(gym.GoalEnv):
             pitch=pitch,
             roll=roll,
         )
+    
+    def get_pos_obs(self, name_object : str):
+        return [self.sim.get_base_position(name_object), self.robot.get_obs()]
+        
