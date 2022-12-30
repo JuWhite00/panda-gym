@@ -11,7 +11,6 @@ from panda_gym.pybullet import PyBullet
 
 class DoosanTest(RobotTaskEnv):
     """Reach task wih Doosan robot.
-
     Args:
         render (bool, optional): Activate rendering. Defaults to False.
         reward_type (str, optional): "sparse" or "dense". Defaults to "sparse".

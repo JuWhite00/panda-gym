@@ -11,7 +11,6 @@ from panda_gym.pybullet import PyBullet
 
 class PyBulletRobot(ABC):
     """Base class for robot env.
-
     Args:
         sim (PyBullet): Simulation instance.
         body_name (str): The name of the robot within the simulation.
@@ -40,7 +39,6 @@ class PyBulletRobot(ABC):
 
     def _load_robot(self, file_name: str, base_position: np.ndarray) -> None:
         """Load the robot.
-
         Args:
             file_name (str): The URDF file name of the robot.
             base_position (np.ndarray): The position of the robot, as (x, y, z).
@@ -59,7 +57,6 @@ class PyBulletRobot(ABC):
     @abstractmethod
     def set_action(self, action: np.ndarray) -> None:
         """Set the action. Must be called just before sim.step().
-
         Args:
             action (np.ndarray): The action.
         """
@@ -67,7 +64,6 @@ class PyBulletRobot(ABC):
     @abstractmethod
     def get_obs(self) -> np.ndarray:
         """Return the observation associated to the robot.
-
         Returns:
             np.ndarray: The observation.
         """
@@ -75,17 +71,14 @@ class PyBulletRobot(ABC):
     @abstractmethod
     def reset(self) -> np.ndarray:
         """Reset the robot and return the observation.
-
         Returns:
             np.ndarray: The observation.
         """
 
     def get_link_position(self, link: int) -> np.ndarray:
         """Returns the position of a link as (x, y, z)
-
         Args:
             link (int): The link index.
-
         Returns:
             np.ndarray: Position as (x, y, z)
         """
@@ -93,10 +86,8 @@ class PyBulletRobot(ABC):
 
     def get_link_velocity(self, link: int) -> np.ndarray:
         """Returns the velocity of a link as (vx, vy, vz)
-
         Args:
             link (int): The link index.
-
         Returns:
             np.ndarray: Velocity as (vx, vy, vz)
         """
@@ -104,10 +95,8 @@ class PyBulletRobot(ABC):
 
     def get_joint_angle(self, joint: int) -> float:
         """Returns the angle of a joint
-
         Args:
             joint (int): The joint index.
-
         Returns:
             float: Joint angle
         """
@@ -115,10 +104,8 @@ class PyBulletRobot(ABC):
 
     def get_joint_velocity(self, joint: int) -> float:
         """Returns the velocity of a joint as (wx, wy, wz)
-
         Args:
             joint (int): The joint index.
-
         Returns:
             np.ndarray: Joint velocity as (wx, wy, wz)
         """
@@ -126,7 +113,6 @@ class PyBulletRobot(ABC):
 
     def control_joints(self, target_angles: np.ndarray) -> None:
         """Control the joints of the robot.
-
         Args:
             target_angles (np.ndarray): The target angles. The length of the array must equal to the number of joints.
         """
@@ -139,7 +125,6 @@ class PyBulletRobot(ABC):
 
     def set_joint_angles(self, angles: np.ndarray) -> None:
         """Set the joint position of a body. Can induce collisions.
-
         Args:
             angles (list): Joint angles.
         """
@@ -147,12 +132,10 @@ class PyBulletRobot(ABC):
 
     def inverse_kinematics(self, link: int, position: np.ndarray, orientation: np.ndarray) -> np.ndarray:
         """Compute the inverse kinematics and return the new joint values.
-
         Args:
             link (int): The link.
             position (x, y, z): Desired position of the link.
             orientation (x, y, z, w): Desired orientation of the link.
-
         Returns:
             List of joint values.
         """
@@ -191,10 +174,8 @@ class Task(ABC):
 
     def seed(self, seed: Optional[int]) -> int:
         """Sets the random seed.
-
         Args:
             seed (Optional[int]): The desired seed. Leave None to generate one.
-
         Returns:
             int: The seed.
         """
@@ -216,7 +197,6 @@ class Task(ABC):
 
 class RobotTaskEnv(gym.GoalEnv):
     """Robotic task goal env, as the junction of a task and a robot.
-
     Args:
         robot (PyBulletRobot): The robot.
         task (Task): The task.
@@ -289,10 +269,8 @@ class RobotTaskEnv(gym.GoalEnv):
         roll: float = 0,
     ) -> Optional[np.ndarray]:
         """Render.
-
         If mode is "human", make the rendering real-time. All other arguments are
         unused. If mode is "rgb_array", return an RGB array of the scene.
-
         Args:
             mode (str): "human" of "rgb_array". If "human", this method waits for the time necessary to have
                 a realistic temporal rendering and all other args are ignored. Else, return an RGB array.
@@ -304,7 +282,6 @@ class RobotTaskEnv(gym.GoalEnv):
             yaw (float, optional): Yaw of the camera. Defaults to 45.
             pitch (float, optional): Pitch of the camera. Defaults to -30.
             roll (int, optional): Rool of the camera. Defaults to 0.
-
         Returns:
             RGB np.ndarray or None: An RGB array if mode is 'rgb_array', else None.
         """
@@ -318,7 +295,3 @@ class RobotTaskEnv(gym.GoalEnv):
             pitch=pitch,
             roll=roll,
         )
-    
-    def get_pos_obs(self, name_object : str):
-        return [self.sim.get_base_position(name_object), self.robot.get_obs()]
-        

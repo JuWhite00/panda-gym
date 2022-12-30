@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-import datetime 
-import pandas as pd 
+import datetime
+import pandas as pd
 import numpy as np
 # import matplotlib.pyplot as plt
 # import multiprocessing
@@ -11,7 +11,6 @@ import cv2
 import os
 
 from panda_gym.envs.core import Task
-from panda_gym.envs.robots.doosan import Doosan
 from panda_gym.utils import distance
 import tacto
 import hydra
@@ -21,10 +20,10 @@ import pybullet as p
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
 
-#conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
+conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
 #conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
 #Path config for windows julien 
-conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
+# conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
 class Test(Task):
     def __init__(
         self,
@@ -60,6 +59,13 @@ class Test(Task):
 
         self.view_matrix_camera = p.computeViewMatrix([0, 0, 0.5], [0, 0, 0], [1, 0, 0])
         self.projection_matrix_camera = p.computeProjectionMatrixFOV(self.fov, self.aspect, self.near, self.far)
+
+        #Create digit feedback
+        self.digits = tacto.Sensor(**self.conf_path.tacto)
+        p.resetDebugVisualizerCamera(**self.conf_path.pybullet_camera)
+        id = 1
+        links_number = [11, 14]
+        self.digits.add_camera(id, links_number)
 
     def _create_scene(self) -> None:
         
@@ -112,19 +118,23 @@ class Test(Task):
         )
 
     def get_obs(self) -> np.ndarray: 
-        
+
+        # compute the RGB image and depth
         rgbdigit, depthdigit = self.return_digit_data()
         rgbcam, depthcam = self.return_camera()
         contact = self.detectcollision()
-        self.df = self.df.append({'rgbdigits':rgbdigit,
-                          'depthdigits':depthdigit,
-                          'rgbcam':rgbcam,
-                          'depthcam':depthcam,
-                          'touching':contact,
-                          'timestamp':datetime.datetime.now()},
-                          ignore_index=True)
 
-        return np.array([])  # no tasak-specific observation  # no tasak-specific observation
+        #obs_vec = [rgbdigit,depthdigit,rgbcam,depthcam,contact]
+
+        self.df = self.df.append({'rgbdigits':rgbdigit,
+                                  'depthdigits':depthdigit,
+                                  'rgbcam':rgbcam,
+                                  'depthcam':depthcam,
+                                  'touching':contact,
+                                  'timestamp':datetime.datetime.now()},
+                                  ignore_index=True)
+
+        return np.array([])  # no tasak-specific observation
 
     def get_achieved_goal(self) -> np.ndarray:
         ee_position = np.array(self.robot.get_ee_position())
@@ -173,6 +183,12 @@ class Test(Task):
         return rgb_tiny, depth_tiny
         
     def return_digit_data(self):
+        
+        #digits.add_object(obj)
+
+        # t = px.utils.SimulationThread(real_time_factor=1.0)
+        # t.start()
+
         color, depth = self.digits.render()
         self.digits.updateGUI(color, depth)
         # time.sleep(0.01)
@@ -202,8 +218,3 @@ class Test(Task):
             collision_detected = 0
 
         return np.array([collision_detected])
-    
-    def get_base_position_target(self,object_target: str ):
-        pos_object_target = self.sim.get_base_position(object_target)
-        return pos_object_target
-

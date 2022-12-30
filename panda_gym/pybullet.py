@@ -14,7 +14,6 @@ import panda_gym.assets
 
 class PyBullet:
     """Convenient class to use PyBullet physics engine.
-
     Args:
         render (bool, optional): Enable rendering. Defaults to False.
         n_substeps (int, optional): Number of sim substep when step() is called. Defaults to 20.
@@ -70,10 +69,8 @@ class PyBullet:
         roll: float = 0,
     ) -> Optional[np.ndarray]:
         """Render.
-
         If mode is "human", make the rendering real-time. All other arguments are
         unused. If mode is "rgb_array", return an RGB array of the scene.
-
         Args:
             mode (str): "human" of "rgb_array". If "human", this method waits for the time necessary to have
                 a realistic temporal rendering and all other args are ignored. Else, return an RGB array.
@@ -85,7 +82,6 @@ class PyBullet:
             yaw (float, optional): Yaw of the camera. Defaults to 45.
             pitch (float, optional): Pitch of the camera. Defaults to -30.
             roll (int, optional): Rool of the camera. Defaults to 0.
-
         Returns:
             RGB np.ndarray or None: An RGB array if mode is 'rgb_array', else None.
         """
@@ -124,10 +120,8 @@ class PyBullet:
 
     def get_base_position(self, body: str) -> np.ndarray:
         """Get the position of the body.
-
         Args:
             body (str): Body unique name.
-
         Returns:
             np.ndarray: The position, as (x, y, z).
         """
@@ -136,10 +130,8 @@ class PyBullet:
 
     def get_base_orientation(self, body: str) -> np.ndarray:
         """Get the orientation of the body.
-
         Args:
             body (str): Body unique name.
-
         Returns:
             np.ndarray: The orientation, as quaternion (x, y, z, w).
         """
@@ -148,11 +140,9 @@ class PyBullet:
 
     def get_base_rotation(self, body: str, type: str = "euler") -> np.ndarray:
         """Get the rotation of the body.
-
         Args:
             body (str): Body unique name.
             type (str): Type of angle, either "euler" or "quaternion"
-
         Returns:
             np.ndarray: The rotation.
         """
@@ -167,10 +157,8 @@ class PyBullet:
 
     def get_base_velocity(self, body: str) -> np.ndarray:
         """Get the velocity of the body.
-
         Args:
             body (str): Body unique name.
-
         Returns:
             np.ndarray: The velocity, as (vx, vy, vz).
         """
@@ -179,10 +167,8 @@ class PyBullet:
 
     def get_base_angular_velocity(self, body: str) -> np.ndarray:
         """Get the angular velocity of the body.
-
         Args:
             body (str): Body unique name.
-
         Returns:
             np.ndarray: The angular velocity, as (wx, wy, wz).
         """
@@ -191,11 +177,9 @@ class PyBullet:
 
     def get_link_position(self, body: str, link: int) -> np.ndarray:
         """Get the position of the link of the body.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
-
         Returns:
             np.ndarray: The position, as (x, y, z).
         """
@@ -204,11 +188,9 @@ class PyBullet:
 
     def get_link_orientation(self, body: str, link: int) -> np.ndarray:
         """Get the orientation of the link of the body.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
-
         Returns:
             np.ndarray: The rotation, as (rx, ry, rz).
         """
@@ -217,11 +199,9 @@ class PyBullet:
 
     def get_link_velocity(self, body: str, link: int) -> np.ndarray:
         """Get the velocity of the link of the body.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
-
         Returns:
             np.ndarray: The velocity, as (vx, vy, vz).
         """
@@ -230,11 +210,9 @@ class PyBullet:
 
     def get_link_angular_velocity(self, body: str, link: int) -> np.ndarray:
         """Get the angular velocity of the link of the body.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
-
         Returns:
             np.ndarray: The angular velocity, as (wx, wy, wz).
         """
@@ -243,11 +221,9 @@ class PyBullet:
 
     def get_joint_angle(self, body: str, joint: int) -> float:
         """Get the angle of the joint of the body.
-
         Args:
             body (str): Body unique name.
             joint (int): Joint index in the body
-
         Returns:
             float: The angle.
         """
@@ -255,11 +231,9 @@ class PyBullet:
 
     def get_joint_velocity(self, body: str, joint: int) -> float:
         """Get the velocity of the joint of the body.
-
         Args:
             body (str): Body unique name.
             joint (int): Joint index in the body
-
         Returns:
             float: The velocity.
         """
@@ -267,7 +241,6 @@ class PyBullet:
 
     def set_base_pose(self, body: str, position: np.ndarray, orientation: np.ndarray) -> None:
         """Set the position of the body.
-
         Args:
             body (str): Body unique name.
             position (np.ndarray): The position, as (x, y, z).
@@ -281,7 +254,6 @@ class PyBullet:
 
     def set_joint_angles(self, body: str, joints: np.ndarray, angles: np.ndarray) -> None:
         """Set the angles of the joints of the body.
-
         Args:
             body (str): Body unique name.
             joints (np.ndarray): List of joint indices, as a list of ints.
@@ -292,7 +264,6 @@ class PyBullet:
 
     def set_joint_angle(self, body: str, joint: int, angle: float) -> None:
         """Set the angle of the joint of the body.
-
         Args:
             body (str): Body unique name.
             joint (int): Joint index in the body.
@@ -302,7 +273,6 @@ class PyBullet:
 
     def control_joints(self, body: str, joints: np.ndarray, target_angles: np.ndarray, forces: np.ndarray) -> None:
         """Control the joints motor.
-
         Args:
             body (str): Body unique name.
             joints (np.ndarray): List of joint indices, as a list of ints.
@@ -319,13 +289,11 @@ class PyBullet:
 
     def inverse_kinematics(self, body: str, link: int, position: np.ndarray, orientation: np.ndarray) -> np.ndarray:
         """Compute the inverse kinematics and return the new joint state.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
             position (np.ndarray): Desired position of the end-effector, as (x, y, z).
             orientation (np.ndarray): Desired orientation of the end-effector as quaternion (x, y, z, w).
-
         Returns:
             np.ndarray: The new joint state.
         """
@@ -339,7 +307,6 @@ class PyBullet:
 
     def place_visualizer(self, target_position: np.ndarray, distance: float, yaw: float, pitch: float) -> None:
         """Orient the camera used for rendering.
-
         Args:
             target (np.ndarray): Target position, as (x, y, z).
             distance (float): Distance from the target position.
@@ -362,7 +329,6 @@ class PyBullet:
 
     def loadURDF(self, body_name: str, **kwargs: Any) -> None:
         """Load URDF file.
-
         Args:
             body_name (str): The name of the body. Must be unique in the sim.
         """
@@ -382,7 +348,6 @@ class PyBullet:
         texture: Optional[str] = None,
     ) -> None:
         """Create a box.
-
         Args:
             body_name (str): The name of the body. Must be unique in the sim.
             half_extents (np.ndarray): Half size of the box in meters, as (x, y, z).
@@ -433,7 +398,6 @@ class PyBullet:
         spinning_friction: Optional[float] = None,
     ) -> None:
         """Create a cylinder.
-
         Args:
             body_name (str): The name of the body. Must be unique in the sim.
             radius (float): The radius in meter.
@@ -480,7 +444,6 @@ class PyBullet:
         spinning_friction: Optional[float] = None,
     ) -> None:
         """Create a sphere.
-
         Args:
             body_name (str): The name of the body. Must be unique in the sim.
             radius (float): The radius in meter.
@@ -525,7 +488,6 @@ class PyBullet:
         collision_kwargs: Dict[str, Any] = {},
     ) -> None:
         """Create a geometry.
-
         Args:
             body_name (str): The name of the body. Must be unique in the sim.
             geom_type (int): The geometry type. See self.physics_client.GEOM_<shape>.
@@ -558,7 +520,6 @@ class PyBullet:
 
     def create_plane(self, z_offset: float) -> None:
         """Create a plane. (Actually, it is a thin box.)
-
         Args:
             z_offset (float): Offset of the plane.
         """
@@ -581,7 +542,6 @@ class PyBullet:
         spinning_friction: Optional[float] = None,
     ) -> None:
         """Create a fixed table. Top is z=0, centered in y.
-
         Args:
             length (float): The length of the table (x direction).
             width (float): The width of the table (y direction)
@@ -605,7 +565,6 @@ class PyBullet:
 
     def set_lateral_friction(self, body: str, link: int, lateral_friction: float) -> None:
         """Set the lateral friction of a link.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
@@ -619,7 +578,6 @@ class PyBullet:
 
     def set_spinning_friction(self, body: str, link: int, spinning_friction: float) -> None:
         """Set the spinning friction of a link.
-
         Args:
             body (str): Body unique name.
             link (int): Link index in the body.
