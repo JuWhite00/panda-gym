@@ -89,14 +89,14 @@ class Test(Task):
         
         self.sim.create_plane(z_offset=-0.4)
         
-        self.sim.create_box(
-            body_name="table",
-            half_extents=[0.2,0.35,0.02],
-            mass=0,
-            position= [0,0,0.1],
-            rgba_color = [0,0,0],
-            ghost = False,
-        )
+        # self.sim.create_box(
+        #     body_name="table",
+        #     half_extents=[0.2,0.35,0.02],
+        #     mass=0,
+        #     position= [0,0,0.1],
+        #     rgba_color = [0,0,0],
+        #     ghost = False,
+        # )
         
         # self.sim.create_sphere(
         #     body_name="target",
@@ -112,7 +112,7 @@ class Test(Task):
         self.sim.loadURDF(
             body_name="target",
             fileName=self.path_obj,
-            basePosition=np.array([0,0,0.3]),
+            basePosition=np.array([-0.3,0.5,0.3]),
             baseOrientation=np.array([0,0,0,1]),
             useFixedBase=False,
         )

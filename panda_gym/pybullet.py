@@ -588,3 +588,9 @@ class PyBullet:
             linkIndex=link,
             spinningFriction=spinning_friction,
         )
+        
+    def getNumJoints(self, body: int):
+        joint_indices = self.physics_client.getNumJoints(body)
+        return joint_indices
+        
+    

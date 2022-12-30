@@ -18,9 +18,10 @@ import hydra
 env = DoosanTest()
 
 observation = env.reset()
-target_position = env.get_target_position("target")
+
 for _ in range(1000):
-    
+    target_position = env.get_target_position("target")
+    print("TARGET POSITION: ", target_position)
     observation, reward, done, info = env.step(target_position)
     
 

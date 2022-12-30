@@ -44,7 +44,7 @@ class Doosan(PyBulletRobot):
         base_position: Optional[np.ndarray] = None,
         control_type: str = "ee",
     ) -> None:
-        base_position = base_position if base_position is not None else np.zeros(3)
+        base_position = base_position if base_position is not None else [-1.0,0.2,0.0]
         self.block_gripper = block_gripper
         self.control_type = control_type
         n_action = 3 if self.control_type == "ee" else 7  # control (x, y z) if "ee", else, control the 7 joints
@@ -60,9 +60,9 @@ class Doosan(PyBulletRobot):
             joint_forces=np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0]),
         )
 
-        self.fingers_indices = np.array([9, 10])
+        self.fingers_indices = np.array([11, 14])
         self.neutral_joint_values = np.array([0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
-        self.ee_link = 11
+        self.ee_link = 14
         self.sim.set_lateral_friction(self.body_name, self.fingers_indices[0], lateral_friction=1.0)
         self.sim.set_lateral_friction(self.body_name, self.fingers_indices[1], lateral_friction=1.0)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[0], spinning_friction=0.001)
@@ -89,6 +89,7 @@ class Doosan(PyBulletRobot):
             target_fingers_width = fingers_width + fingers_ctrl
 
         target_angles = np.concatenate((target_arm_angles, [target_fingers_width / 2, target_fingers_width / 2]))
+        print("TARGET ANGLES: ", target_angles)
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:
@@ -98,15 +99,16 @@ class Doosan(PyBulletRobot):
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """
-        ee_displacement = ee_displacement[:3] * 0.05  # limit maximum change in position
+        ee_displacement = ee_displacement[:3]# limit maximum change in position
         # get the current position and the target position
-        ee_position = self.get_ee_position()
-        target_ee_position = ee_position + ee_displacement
+        # ee_position = self.get_ee_position()
+        # target_ee_position = ee_position + ee_displacement
         # Clip the height target. For some reason, it has a great impact on learning
-        target_ee_position[2] = np.max((0, target_ee_position[2]))
+        #target_ee_position[2] = np.max((0, target_ee_position[2]))
+        
         # compute the new joint angles
         target_arm_angles = self.inverse_kinematics(
-            link=self.ee_link, position=target_ee_position, orientation=np.array([1.0, 0.0, 0.0, 0.0])
+            link=self.ee_link, position=ee_displacement, orientation=np.array([1.0, 0.0, 0.0, 0.0])
         )
         target_arm_angles = target_arm_angles[:7]  # remove fingers angles
         return target_arm_angles

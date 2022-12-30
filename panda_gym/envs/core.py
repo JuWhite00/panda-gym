@@ -299,3 +299,11 @@ class RobotTaskEnv(gym.GoalEnv):
     def get_target_position(self, object_name : str):
         target_position = self.sim.get_base_position(object_name)
         return target_position
+    
+    def get_joints_position(self,object_name : str, number_joints: int): 
+        joints_position = self.sim.get_joint_angle(object_name, number_joints)
+        return joints_position
+    def joint_indices(self, id_robot: int):
+        joint_indices = self.sim.getNumJoints(id_robot)
+        return joint_indices
+   
