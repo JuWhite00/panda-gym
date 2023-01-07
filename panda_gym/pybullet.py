@@ -22,7 +22,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 20, background_color: np.ndarray = np.array([223.0, 54.0, 45.0])
+        self, render: bool = False, n_substeps: int = 20, background_color: np.ndarray = np.array([255., 255., 255.])
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \

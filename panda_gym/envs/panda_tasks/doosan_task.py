@@ -20,7 +20,7 @@ class DoosanTest(RobotTaskEnv):
     
     def __init__(self, render: bool = True, reward_type: str = "sparse", control_type: str = "ee") -> None:
         sim = PyBullet(render=render)
-        robot = Doosan(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
+        robot = Doosan(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), base_orientation=np.array([0., 0., -1.047, 1.]) ,control_type=control_type)
         task = Test(sim, reward_type=reward_type, robot=robot)
         super().__init__(robot, task)
 

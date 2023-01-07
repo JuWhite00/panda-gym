@@ -1,6 +1,7 @@
 import numpy as np
 from gym import spaces
 
+from typing import Optional
 from panda_gym.envs.core import PyBulletRobot
 from panda_gym.pybullet import PyBullet
 
@@ -20,7 +21,8 @@ class Panda(PyBulletRobot):
         self,
         sim: PyBullet,
         block_gripper: bool = False,
-        base_position: np.ndarray = np.array([0.0, 0.0, 0.0]),
+        base_position: Optional[np.ndarray] = None,
+        base_orientation: Optional[np.ndarray] = [0.,0.,0.,1.],
         control_type: str = "ee",
     ) -> None:
         self.block_gripper = block_gripper
@@ -33,6 +35,7 @@ class Panda(PyBulletRobot):
             body_name="panda",
             file_name="franka_panda/panda.urdf",
             base_position=base_position,
+            base_orientation=base_orientation,
             action_space=action_space,
             joint_indices=np.array([0, 1, 2, 3, 4, 5, 6, 9, 10]),
             joint_forces=np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0]),

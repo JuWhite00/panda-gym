@@ -24,6 +24,7 @@ class PyBulletRobot(ABC):
         body_name: str,
         file_name: str,
         base_position: np.ndarray,
+        base_orientation: np.ndarray,
         action_space: gym.spaces.Space,
         joint_indices: np.ndarray,
         joint_forces: np.ndarray,
@@ -31,13 +32,13 @@ class PyBulletRobot(ABC):
         self.sim = sim
         self.body_name = body_name
         with self.sim.no_rendering():
-            self._load_robot(file_name, base_position)
+            self._load_robot(file_name, base_position, base_orientation)
             self.setup()
         self.action_space = action_space
         self.joint_indices = joint_indices
         self.joint_forces = joint_forces
 
-    def _load_robot(self, file_name: str, base_position: np.ndarray) -> None:
+    def _load_robot(self, file_name: str, base_position: np.ndarray, base_orientation: np.ndarray) -> None:
         """Load the robot.
         Args:
             file_name (str): The URDF file name of the robot.
@@ -47,6 +48,7 @@ class PyBulletRobot(ABC):
             body_name=self.body_name,
             fileName=file_name,
             basePosition=base_position,
+            baseOrientation=base_orientation,
             useFixedBase=True,
         )
 
