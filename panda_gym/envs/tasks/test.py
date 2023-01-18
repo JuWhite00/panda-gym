@@ -89,14 +89,14 @@ class Test(Task):
         
         self.sim.create_plane(z_offset=-0.4)
         
-        # self.sim.create_box(
-        #     body_name="table",
-        #     half_extents=[0.2,0.35,0.02],
-        #     mass=0,
-        #     position= [0,0,0.1],
-        #     rgba_color = [0,0,0],
-        #     ghost = False,
-        # )
+        self.sim.create_box(
+            body_name="table",
+            half_extents=[0.2,0.35,0.02],
+            mass=0,
+            position= [0,0,0.1],
+            rgba_color = [0,0,0],
+            ghost = False,
+        )
         
         # self.sim.create_sphere(
         #     body_name="target",
@@ -170,8 +170,10 @@ class Test(Task):
         
         depth_buffer_tiny = np.reshape(images[3], [self.width_camera, self.height_camera])
         depth_tiny = self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_tiny)
-        rgb_tiny = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) * 1. / 255.
-        rgb_tiny = rgb_tiny[:,:,:3]
+        rgb_tiny = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) #* 1. / 255.
+        # Convert the RGB image to BGR
+        rgb_tiny = cv2.cvtColor(rgb_tiny, cv2.COLOR_BGR2RGB)
+
         
         # for process in self.all_processes:
         #     process.terminate()
@@ -183,15 +185,8 @@ class Test(Task):
         return rgb_tiny, depth_tiny
         
     def return_digit_data(self):
-        
-        #digits.add_object(obj)
-
-        # t = px.utils.SimulationThread(real_time_factor=1.0)
-        # t.start()
-
         color, depth = self.digits.render()
         self.digits.updateGUI(color, depth)
-        # time.sleep(0.01)
         return np.array(color), np.array(depth)
 
     def display_video(self, color_image, depth_image): # display camera images in get_obs()
