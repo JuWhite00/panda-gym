@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-import datetime
+from datetime import datetime
 import pandas as pd
 import numpy as np
 # import matplotlib.pyplot as plt
@@ -19,11 +19,12 @@ import pybulletX as px
 import pybullet as p 
 from omegaconf import DictConfig, OmegaConf
 from sys import platform
+import matplotlib.pyplot as plt
 
-#conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
+conf_path = "/home/tanguy/Documents/Project_rob/panda-gym/test/conf/grasp.yaml"
 #conf_path = "/home/julien/roboticProject/panda-gym/test/conf/grasp.yaml"
 #Path config for windows julien 
-conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
+#conf_path = "C:/Users/bouff/RoboticsProject/panda-gym/test/conf/grasp.yaml"
 class Test(Task):
     def __init__(
         self,
@@ -43,7 +44,9 @@ class Test(Task):
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
         self.goal_range_high = np.array([goal_range / 2, goal_range / 2, goal_range])
         self.path_obj = ""
-        self.df = pd.DataFrame(columns=['rgbdigits','depthdigits','rgbcam','depthcam','touching','timestamp'])
+        self.path_dataset = ""
+        self.dirname = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0])
+        self.df = pd.DataFrame(columns=['touching','timestamp'])
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -68,22 +71,22 @@ class Test(Task):
         self.digits.add_camera(id, links_number)
 
     def _create_scene(self) -> None:
-        
-        dirname = os.path.join(os.path.split(os.path.split(os.path.split(os.path.split(__file__)[0])[0])[0])[0])
 
         if self.path_obj == "":
             if platform == "win32":
-                self.path_obj = dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
+                self.path_obj = self.dirname + '\\mesh\\pybullet-URDF-models\\urdf_models\\models\\'
                 select_name = random.sample(os.listdir(self.path_obj),1)[0]
                 self.path_obj = self.path_obj + select_name + '\\model.urdf'
+                self.path_dataset = self.dirname + '\\dataset\\'
             else:
-                self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
+                self.path_obj = self.dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
                 select_name = random.sample(os.listdir(self.path_obj),1)[0]
                 self.path_obj = self.path_obj + select_name + '/model.urdf'
+                self.path_dataset = self.dirname + '/dataset/'
         
         #Part for julien
         # if self.path_obj == "":
-        #     self.path_obj = dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
+        #     self.path_obj = self.dirname + '/mesh/pybullet-URDF-models/urdf_models/models/'
         #     select_name = random.sample(os.listdir(self.path_obj),1)[0]
         #     self.path_obj = self.path_obj + select_name + '/model.urdf'
         
@@ -120,18 +123,15 @@ class Test(Task):
     def get_obs(self) -> np.ndarray: 
 
         # compute the RGB image and depth
-        rgbdigit, depthdigit = self.return_digit_data()
-        rgbcam, depthcam = self.return_camera()
+        time = self.gettime()
+        self.return_digit_data(time)
+        self.return_camera(time)
         contact = self.detectcollision()
 
         #obs_vec = [rgbdigit,depthdigit,rgbcam,depthcam,contact]
 
-        self.df = self.df.append({'rgbdigits':rgbdigit,
-                                  'depthdigits':depthdigit,
-                                  'rgbcam':rgbcam,
-                                  'depthcam':depthcam,
-                                  'touching':contact,
-                                  'timestamp':datetime.datetime.now()},
+        self.df = self.df.append({'touching':contact,
+                                  'timestamp':time},
                                   ignore_index=True)
 
         return np.array([])  # no tasak-specific observation
@@ -160,7 +160,7 @@ class Test(Task):
         else:
             return -d
 
-    def return_camera(self): # compute the RGB image from the init camera + the depth converted
+    def return_camera(self, time): # compute the RGB image from the init camera + the depth converted
         images = p.getCameraImage(self.width_camera,
                           self.height_camera,
                           self.view_matrix_camera,
@@ -169,7 +169,7 @@ class Test(Task):
                           renderer=p.ER_TINY_RENDERER)
         
         depth_buffer_tiny = np.reshape(images[3], [self.width_camera, self.height_camera])
-        depth_tiny = self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_tiny)
+        depth_tiny = (self.far * self.near / (self.far - (self.far - self.near) * depth_buffer_tiny)) 
         rgb_tiny = np.reshape(images[2], (self.height_camera, self.width_camera, 4)) #* 1. / 255.
         # Convert the RGB image to BGR
         rgb_tiny = cv2.cvtColor(rgb_tiny, cv2.COLOR_BGR2RGB)
@@ -180,14 +180,18 @@ class Test(Task):
 
         cv2.imshow("RGB image", rgb_tiny)
         cv2.imshow("Depth image", depth_tiny)
-        
 
-        return rgb_tiny, depth_tiny
+        cv2.imwrite(self.path_dataset+time+"_rgb.png",rgb_tiny)
+        plt.imsave(self.path_dataset+time+"_depth.png",depth_tiny,cmap="gray")
         
-    def return_digit_data(self):
+    def return_digit_data(self, time):
         color, depth = self.digits.render()
         self.digits.updateGUI(color, depth)
-        return np.array(color), np.array(depth)
+        cv2.imwrite(self.path_dataset+time+"_digit1rgb.png",color[0])
+        cv2.imwrite(self.path_dataset+time+"_digit2rgb.png",color[1])
+        plt.imsave(self.path_dataset+time+"_digit1depth.png",depth[0],cmap="gray")
+        plt.imsave(self.path_dataset+time+"_digit2depth.png",depth[1],cmap="gray")
+        #adding digit return
 
     def display_video(self, color_image, depth_image): # display camera images in get_obs()
         cv2.namedWindow("RGB")
@@ -214,3 +218,7 @@ class Test(Task):
 
         return np.array([collision_detected])
 
+    def gettime(self):
+        time = datetime.now() # current date and time
+        time = time.strftime("%M:%S:%f")
+        return time
