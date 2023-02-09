@@ -134,6 +134,8 @@ class Test(Task):
                                   'timestamp':time},
                                   ignore_index=True)
 
+        self.df.to_csv(self.dirname + "/dataset/list.csv", header=False, index=False)
+
         return np.array([])  # no tasak-specific observation
 
     def get_achieved_goal(self) -> np.ndarray:
